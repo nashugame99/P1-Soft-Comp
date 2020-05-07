@@ -1,0 +1,31 @@
+{
+  "name": "droneaid-tello-demo",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "standard",
+    "start": "node server.js",
+    "postinstall": "node download.js https://cdn.jsdelivr.net/npm/@cloud-annotations/object-detection public/js/object-detection.js"
+  },
+  "author": "",
+  "contributors": [
+    "Pedro Cruz (https://github.com/pedrocruzio)",
+    "va barbosa (https://github.com/vabarbosa)",
+    "Nick Bourdakos (https://github.com/bourdakos1)",
+    "John Walicki (https://github.com/johnwalicki)"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Code-and-Response/DroneAid.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Code-and-Response/DroneAid/issues"
+  },
+  "homepage": "https://github.com/Code-and-Response/DroneAid",
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^7.1.2"
+  }
+}
