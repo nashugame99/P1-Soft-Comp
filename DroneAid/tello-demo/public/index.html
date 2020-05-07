@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>droneaid // tello demo</title>
+    <link rel="icon" href="/img/logo_icon_black_196.png">
+    <link rel="stylesheet" href="/css/codait.css">
+    <link rel="stylesheet" href="/css/droneaid-tello.css">
+  </head>
+  <body class="busy">
+    <header class="max-header" role="banner" aria-label="DroneAid">
+      <a class="max-skip" href="#max-main-content" tabindex="0">Skip to main content</a>
+      <span class="max-header-logo">
+        <!-- logo goes here -->
+      </span>
+      <a class="max-header-name" href="//ibm.biz/max-models" target="_blank" title="MAX">
+        <span class="max-header-name-prefix">DroneAid &nbsp;</span>
+        Tello Demo
+      </a>
+      <div class="max-header-sub">
+        <span class="max-header-sub-text">
+          DroneAid model inferencing on video stream from a Tello drone
+        </span>
+      </div>
+      <div class="max-header-filler">
+        <button title="Toggle info" data-max-panel="max-info-panel">
+          <svg class="max-panel-expand-icon" focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32"><polygon points="17 22 17 13 13 13 13 15 15 15 15 22 12 22 12 24 20 24 20 22 17 22"/><path d="M16,7a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,7Z"/><path d="M16,30A14,14,0,1,1,30,16,14,14,0,0,1,16,30ZM16,4A12,12,0,1,0,28,16,12,12,0,0,0,16,4Z"/></svg>
+          <svg class="max-panel-collapse-icon" focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="20" height="20" viewBox="0 0 32 32"><path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6L24 9.4z"></path></svg>
+        </button>
+      </div>
+    </header>
+    
+    <section class="max-subheader">
+      <fieldset class="max-field prediction-toggle-fieldset">
+        <legend>Prediction</legend>
+        <div>
+          <input class="max-toggle" id="predictionToggle" type="checkbox" onchange="predictionToggled();">
+          <label class="max-toggle-label" for="predictionToggle">
+            <span class="max-toggle-off" aria-hidden="true">Off</span>
+            <span class="max-toggle-ui"></span>
+            <span class="max-toggle-on" aria-hidden="true">On</span>
+          </label>
+        </div>
+      </fieldset>
+      <fieldset class="max-field max-threshold-fieldset">
+        <label for="confidenceSlider">Min Confidence Level</label>
+        <input id="confidenceSlider" type="range" min="0.1" max="1" step="0.05" value="0.6" onchange="confidenceChanged();">
+        <span data-max-range="confidenceSlider"></span>
+      </fieldset>
+      <fieldset class="max-field max-threshold-fieldset">
+        <label for="historySlider">Counter Prediction History</label>
+        <input id="historySlider" type="range" min="1" max="30" step="1" value="15" onchange="historyChanged();">
+        <span data-max-range="historySlider"></span>
+      </fieldset>
+      <div class="max-field spacer-field"> </div>
+      <div class="max-field battery-field">
+        <div id="not-connected">Tello not connected</div>
+        <div id="battery">
+          <div>
+            <div id="battery-level"></div>
+          </div>
+          <div></div>
+        </div>
+      </div>
+    </section>
+    
+    <aside class="max-panel" id="max-info-panel">
+      <h1>DroneAid</h1>
+      <p>Creating a universal language to become the voice of millions.</p>
+      <h3>Learn more</h3>
+      <p>
+        <ul>
+          <li>
+            <a href="https://developer.ibm.com/blogs/droneaid-visual-recognition-helps-hurricane-victims/" target="_blank">
+              DroneAID: Visual recognition helps hurricane victims
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/Code-and-Response/DroneAid" target="_blank">
+              DroneAid GitHub respository
+            </a>
+          </li>
+          <li>
+            <a href="https://developer.ibm.com/callforcode/" target="_blank">
+              Call for Code
+            </a>
+          </li>
+        </ul>
+      </p>
+      <h3>Usage</h3>
+      <p>
+        Detailed setup instructions available in the <a href="https://github.com/Code-and-Response/DroneAid/tree/master/tello-demo" target="_blank">GitHub repository</a>.
+      </p>
+      <ul>
+        <li>
+          <p>
+            After connecting your computer to your Tello's Wi-Fi, click <strong>Start Stream</strong>
+            to view the live stream from the Tello Drone.
+          </p>
+        </li>
+        <li>
+          <p>Adjust settings as necessary:</p>
+          <dl>
+            <dt>Prediction</dt><dd>Enable/disable model prediction</dd>
+            <dt>Min Confidence Level</dt><dd>Set minimum confidence level for prediction</dd>
+            <dt>Counter Prediction History</dt><dd>Set maximum prediction history maintained for comparison when counting detected objects</dd>
+          </dl>
+        </li>
+        <li>Fly the drone</li>
+      </ul>
+      <div class="max-toolbar">
+        
+      </div>
+    </aside>
+    
+    <div id="max-main-content" class="max-main-content">
+      <div>
+        <div class="left-side">
+    
+          <button class="max-btn-primary stream-button" onclick="manualStreamTello()" disabled>Start stream</button>
+    
+          <div class="max-input-container">
+            <canvas id="stream-canvas"></canvas>
+            <canvas id="prediction-canvas"></canvas>
+          </div>
+        </div>
+        
+        <div class="right-side">
+          <div class="max-log"></div>
+    
+          <div class="max-loading">
+            <svg viewBox="-75 -75 150 150">
+              <title>Loading</title>
+              <circle cx="0" cy="0" r="37.5" />
+            </svg>
+          </div>
+        
+          <div id="symbol-count">
+            <ul>
+              <li>children <span id="children-count">0</span></li>
+              <li>elderly <span id="elderly-count">0</span></li>
+              <li>firstaid <span id="firstaid-count">0</span></li>
+              <li>food <span id="food-count">0</span></li>
+              <li>ok <span id="ok-count">0</span></li>
+              <li>shelter <span id="shelter-count">0</span></li>
+              <li>sos <span id="sos-count">0</span></li>
+              <li>water <span id="water-count">0</span></li>
+            </ul>
+          </div>
+        </div>        
+        <img src="/keymap.png" width="950px">
+      </div>
+    </div>
+        
+    <script src="/js/object-detection.js"></script>
+    <script src="/js/slider.js"></script>
+    <script src="/js/jsmpeg.min.js"></script>
+    <script src="/js/droneaid-tello-demo.js"></script>
+    <script src="/js/droneaid-counter.js"></script>
+    
+  </body>
+</html>
